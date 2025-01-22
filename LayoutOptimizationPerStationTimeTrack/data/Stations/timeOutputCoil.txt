@@ -1,2 +1,0 @@
-agentID, delayTime
-MN0018,   183.39

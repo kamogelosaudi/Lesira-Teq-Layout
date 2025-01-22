@@ -7,7 +7,7 @@
 <AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.3.202411201858" AlpVersion="8.9.2">
 <Model>
 	<Id>1736334144601</Id>
-	<Name><![CDATA[LayoutOptimizationPerStationTimeTrack]]></Name>
+	<Name><![CDATA[LayoutOptimizationOverallTimeTrack]]></Name>
 	<EngineVersion>6</EngineVersion>
 	<JavaPackageName><![CDATA[newlesiralayout]]></JavaPackageName>
 	<ModelTimeUnit><![CDATA[Second]]></ModelTimeUnit>
@@ -23,9 +23,16 @@
 			<Import><![CDATA[import com.anylogic.cloud.util.StringUtils;
 import org.eclipse.jdt.internal.compiler.lookup.VoidTypeBinding;]]></Import>
 			<StartupCode><![CDATA[// Initialising Raw Material
-rawInit();]]></StartupCode>
+rawInit();
+mapFiles();]]></StartupCode>
 			<DestroyCode><![CDATA[// Writing times to corresponding file
-collectStationData();]]></DestroyCode>
+if (scenarioName.equals("ZeroStockOpening")) {
+	writeToFileMain("ZeroStockOpening");
+}
+if (scenarioName.equals("BufferStockOpening")) {
+	writeToFileMain("BufferStockOpening");
+	writeEndingStock();
+}]]></DestroyCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1736334144613</Id>
@@ -149,7 +156,7 @@ collectStationData();]]></DestroyCode>
 				<Variable Class="PlainVariable">
 					<Id>1736923934930</Id>
 					<Name><![CDATA[inputCount]]></Name>
-					<X>60</X><Y>2620</Y>
+					<X>60</X><Y>2740</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -164,7 +171,7 @@ collectStationData();]]></DestroyCode>
 				<Variable Class="PlainVariable">
 					<Id>1736923934934</Id>
 					<Name><![CDATA[canRelease]]></Name>
-					<X>60</X><Y>2645</Y>
+					<X>60</X><Y>2765</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -192,9 +199,9 @@ collectStationData();]]></DestroyCode>
 					</Properties>
 				</Variable>
 				<Variable Class="PlainVariable">
-					<Id>1737437554297</Id>
-					<Name><![CDATA[lidTimeEntries]]></Name>
-					<X>-700</X><Y>2250</Y>
+					<Id>1737300035892</Id>
+					<Name><![CDATA[mainTimeEntries]]></Name>
+					<X>60</X><Y>2850</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -207,345 +214,15 @@ collectStationData();]]></DestroyCode>
 					</Properties>
 				</Variable>
 				<Variable Class="PlainVariable">
-					<Id>1737443702632</Id>
-					<Name><![CDATA[coilTimeEntries]]></Name>
-					<X>-700</X><Y>2280</Y>
+					<Id>1737438439921</Id>
+					<Name><![CDATA[fileMapping]]></Name>
+					<X>60</X><Y>2590</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443705193</Id>
-					<Name><![CDATA[plungerTimeEntries]]></Name>
-					<X>-700</X><Y>2310</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443706973</Id>
-					<Name><![CDATA[rotorTimeEntries]]></Name>
-					<X>-700</X><Y>2340</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443709617</Id>
-					<Name><![CDATA[bodyTimeEntries]]></Name>
-					<X>-700</X><Y>2370</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443712198</Id>
-					<Name><![CDATA[valveTimeEntries]]></Name>
-					<X>-700</X><Y>2400</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443730794</Id>
-					<Name><![CDATA[pcTimeEntries]]></Name>
-					<X>-400</X><Y>2250</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443730796</Id>
-					<Name><![CDATA[nidaTimeEntries]]></Name>
-					<X>-400</X><Y>2280</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443730798</Id>
-					<Name><![CDATA[clipTimeEntries]]></Name>
-					<X>-400</X><Y>2310</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443730800</Id>
-					<Name><![CDATA[coverTimeEntries]]></Name>
-					<X>-400</X><Y>2340</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443730802</Id>
-					<Name><![CDATA[mtmTimeEntries]]></Name>
-					<X>-400</X><Y>2370</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443730804</Id>
-					<Name><![CDATA[mPrepTimeEntries]]></Name>
-					<X>-400</X><Y>2400</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812929</Id>
-					<Name><![CDATA[vftTimeEntries]]></Name>
-					<X>-700</X><Y>2430</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812931</Id>
-					<Name><![CDATA[testTimeEntries]]></Name>
-					<X>-700</X><Y>2460</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812933</Id>
-					<Name><![CDATA[ePrepTimeEntries]]></Name>
-					<X>-700</X><Y>2490</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812935</Id>
-					<Name><![CDATA[eSoldTimeEntries]]></Name>
-					<X>-700</X><Y>2520</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812937</Id>
-					<Name><![CDATA[batteryTimeEntries]]></Name>
-					<X>-700</X><Y>2550</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812939</Id>
-					<Name><![CDATA[probeTimeEntries]]></Name>
-					<X>-700</X><Y>2580</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812941</Id>
-					<Name><![CDATA[maniTimeEntries]]></Name>
-					<X>-400</X><Y>2430</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812943</Id>
-					<Name><![CDATA[mptTimeEntries]]></Name>
-					<X>-400</X><Y>2460</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812945</Id>
-					<Name><![CDATA[mtbTimeEntries]]></Name>
-					<X>-400</X><Y>2490</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812947</Id>
-					<Name><![CDATA[ciuTimeEntries]]></Name>
-					<X>-400</X><Y>2520</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812949</Id>
-					<Name><![CDATA[shipTimeEntries]]></Name>
-					<X>-400</X><Y>2550</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new HashMap<>()]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1737443812951</Id>
-					<Name><![CDATA[dispatchTimeEntries]]></Name>
-					<X>-400</X><Y>2580</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[HashMap<String, Double>]]></Type>        
+						<Type><![CDATA[HashMap]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[new HashMap<>()]]></Code>
 						</InitialValue>
@@ -603,7 +280,7 @@ collectStationData();]]></DestroyCode>
 				<Variable Class="Parameter">
 					<Id>1736923934966</Id>
 					<Name><![CDATA[holdTime]]></Name>
-					<X>60</X><Y>2590</Y>
+					<X>60</X><Y>2710</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -3560,6 +3237,39 @@ collectStationData();]]></DestroyCode>
 					</Points>
 				</Connector>
 				<Connector>
+					<Id>1736722291584</Id>
+					<Name><![CDATA[connector41]]></Name>
+					<X>1040</X><Y>1934</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[newlesiralayout]]></PackageName>
+						<ClassName><![CDATA[Main]]></ClassName>
+						<ItemName><![CDATA[productOut]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[Sink]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[newlesiralayout]]></PackageName>
+						<ClassName><![CDATA[Main]]></ClassName>
+						<ItemName><![CDATA[timeEnd]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-35</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
 					<Id>1736835779632</Id>
 					<Name><![CDATA[connector2]]></Name>
 					<X>92</X><Y>1550</Y>
@@ -3790,39 +3500,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndLid]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>50</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447629572</Id>
-					<Name><![CDATA[connector24]]></Name>
-					<X>430</X><Y>1535</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndLid]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[valveAssembly]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -3832,13 +3509,13 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>105</X><Y>0</Y></Point>
+						<Point><X>165</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
 					<Id>1737447634806</Id>
 					<Name><![CDATA[connector25]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>370</X><Y>1610</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3856,39 +3533,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndCoil]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>370</X><Y>1610</Y></Point>
-						<Point><X>380</X><Y>1610</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447634808</Id>
-					<Name><![CDATA[connector30]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndCoil]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[bodyAssembly]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -3897,16 +3541,16 @@ collectStationData();]]></DestroyCode>
 						<ItemName><![CDATA[port1]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
-						<Point><X>390</X><Y>1610</Y></Point>
-						<Point><X>400</X><Y>1610</Y></Point>
-						<Point><X>400</X><Y>1574</Y></Point>
-						<Point><X>427</X><Y>1574</Y></Point>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>30</X><Y>0</Y></Point>
+						<Point><X>30</X><Y>-36</Y></Point>
+						<Point><X>57</X><Y>-36</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
 					<Id>1737447641365</Id>
 					<Name><![CDATA[connector14]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>372</X><Y>1680</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3924,39 +3568,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndPlunger]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>372</X><Y>1680</Y></Point>
-						<Point><X>440</X><Y>1680</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447641367</Id>
-					<Name><![CDATA[connector36]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndPlunger]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[valveAssembly]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -3965,16 +3576,16 @@ collectStationData();]]></DestroyCode>
 						<ItemName><![CDATA[port3]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
-						<Point><X>450</X><Y>1680</Y></Point>
-						<Point><X>515</X><Y>1680</Y></Point>
-						<Point><X>515</X><Y>1567</Y></Point>
-						<Point><X>535</X><Y>1567</Y></Point>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>143</X><Y>0</Y></Point>
+						<Point><X>143</X><Y>-113</Y></Point>
+						<Point><X>163</X><Y>-113</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
 					<Id>1737447644995</Id>
 					<Name><![CDATA[connector37]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>372</X><Y>1750</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3992,39 +3603,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndRotor]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>372</X><Y>1750</Y></Point>
-						<Point><X>450</X><Y>1750</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447644997</Id>
-					<Name><![CDATA[connector38]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndRotor]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[valveAssembly]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4033,10 +3611,10 @@ collectStationData();]]></DestroyCode>
 						<ItemName><![CDATA[port4]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
-						<Point><X>460</X><Y>1750</Y></Point>
-						<Point><X>515</X><Y>1750</Y></Point>
-						<Point><X>515</X><Y>1583</Y></Point>
-						<Point><X>535</X><Y>1583</Y></Point>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>143</X><Y>0</Y></Point>
+						<Point><X>143</X><Y>-167</Y></Point>
+						<Point><X>163</X><Y>-167</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -4060,39 +3638,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndBody]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>9</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447652241</Id>
-					<Name><![CDATA[connector39]]></Name>
-					<X>510</X><Y>1598</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndBody]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[valveAssembly]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4102,9 +3647,9 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>5</X><Y>0</Y></Point>
-						<Point><X>5</X><Y>-47</Y></Point>
-						<Point><X>25</X><Y>-47</Y></Point>
+						<Point><X>24</X><Y>0</Y></Point>
+						<Point><X>24</X><Y>-47</Y></Point>
+						<Point><X>44</X><Y>-47</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -4128,39 +3673,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndVFT]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>13</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447726848</Id>
-					<Name><![CDATA[connector43]]></Name>
-					<X>700</X><Y>1535</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndVFT]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[queue]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4170,10 +3682,12 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>0</X><Y>40</Y></Point>
-						<Point><X>-95</X><Y>40</Y></Point>
-						<Point><X>-95</X><Y>90</Y></Point>
-						<Point><X>-65</X><Y>90</Y></Point>
+						<Point><X>13</X><Y>0</Y></Point>
+						<Point><X>23</X><Y>0</Y></Point>
+						<Point><X>23</X><Y>40</Y></Point>
+						<Point><X>-72</X><Y>40</Y></Point>
+						<Point><X>-72</X><Y>90</Y></Point>
+						<Point><X>-42</X><Y>90</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -4197,39 +3711,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndTest]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>25</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447749799</Id>
-					<Name><![CDATA[connector45]]></Name>
-					<X>910</X><Y>1625</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndTest]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[unbatch]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4239,13 +3720,13 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>10</X><Y>0</Y></Point>
+						<Point><X>45</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
 					<Id>1737447783266</Id>
 					<Name><![CDATA[connector22]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>1164</X><Y>1559</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4263,39 +3744,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndEPrep]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>1164</X><Y>1559</Y></Point>
-						<Point><X>1170</X><Y>1560</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447783268</Id>
-					<Name><![CDATA[connector49]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndEPrep]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[electronicsSoldering]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4304,11 +3752,13 @@ collectStationData();]]></DestroyCode>
 						<ItemName><![CDATA[port1]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
-						<Point><X>1180</X><Y>1560</Y></Point>
-						<Point><X>1185</X><Y>1615</Y></Point>
-						<Point><X>1075</X><Y>1615</Y></Point>
-						<Point><X>1075</X><Y>1660</Y></Point>
-						<Point><X>1100</X><Y>1660</Y></Point>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>6</X><Y>1</Y></Point>
+						<Point><X>16</X><Y>1</Y></Point>
+						<Point><X>21</X><Y>56</Y></Point>
+						<Point><X>-89</X><Y>56</Y></Point>
+						<Point><X>-89</X><Y>101</Y></Point>
+						<Point><X>-64</X><Y>101</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -4332,39 +3782,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndESold]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>6</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447803242</Id>
-					<Name><![CDATA[connector51]]></Name>
-					<X>1180</X><Y>1684</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndESold]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[powerConsumption]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4374,14 +3791,16 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>5</X><Y>-24</Y></Point>
-						<Point><X>24</X><Y>-24</Y></Point>
+						<Point><X>6</X><Y>0</Y></Point>
+						<Point><X>16</X><Y>0</Y></Point>
+						<Point><X>21</X><Y>-24</Y></Point>
+						<Point><X>40</X><Y>-24</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
 					<Id>1737447810295</Id>
 					<Name><![CDATA[connector44]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>1047</X><Y>1660</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4399,39 +3818,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndBattery]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>1047</X><Y>1660</Y></Point>
-						<Point><X>1060</X><Y>1660</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447810297</Id>
-					<Name><![CDATA[connector52]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndBattery]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[electronicsPrep]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4440,17 +3826,19 @@ collectStationData();]]></DestroyCode>
 						<ItemName><![CDATA[port4]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
-						<Point><X>1070</X><Y>1660</Y></Point>
-						<Point><X>1075</X><Y>1615</Y></Point>
-						<Point><X>980</X><Y>1615</Y></Point>
-						<Point><X>980</X><Y>1583</Y></Point>
-						<Point><X>1100</X><Y>1583</Y></Point>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>13</X><Y>0</Y></Point>
+						<Point><X>23</X><Y>0</Y></Point>
+						<Point><X>28</X><Y>-45</Y></Point>
+						<Point><X>-67</X><Y>-45</Y></Point>
+						<Point><X>-67</X><Y>-77</Y></Point>
+						<Point><X>53</X><Y>-77</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
 					<Id>1737447814522</Id>
 					<Name><![CDATA[connector46]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>1047</X><Y>1730</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4468,39 +3856,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndProbe]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>1047</X><Y>1730</Y></Point>
-						<Point><X>1060</X><Y>1730</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447814524</Id>
-					<Name><![CDATA[connector53]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndProbe]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[electronicsPrep]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4509,17 +3864,19 @@ collectStationData();]]></DestroyCode>
 						<ItemName><![CDATA[port3]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
-						<Point><X>1070</X><Y>1730</Y></Point>
-						<Point><X>1075</X><Y>1615</Y></Point>
-						<Point><X>980</X><Y>1615</Y></Point>
-						<Point><X>980</X><Y>1567</Y></Point>
-						<Point><X>1100</X><Y>1567</Y></Point>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>13</X><Y>0</Y></Point>
+						<Point><X>23</X><Y>0</Y></Point>
+						<Point><X>28</X><Y>-115</Y></Point>
+						<Point><X>-67</X><Y>-115</Y></Point>
+						<Point><X>-67</X><Y>-163</Y></Point>
+						<Point><X>53</X><Y>-163</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
 					<Id>1737447966089</Id>
 					<Name><![CDATA[connector28]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>1242</X><Y>1660</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4537,39 +3894,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndPC]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>1242</X><Y>1660</Y></Point>
-						<Point><X>1255</X><Y>1660</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737447966094</Id>
-					<Name><![CDATA[connector54]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndPC]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[nida]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4578,17 +3902,19 @@ collectStationData();]]></DestroyCode>
 						<ItemName><![CDATA[port1]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
-						<Point><X>1265</X><Y>1660</Y></Point>
-						<Point><X>1265</X><Y>1615</Y></Point>
-						<Point><X>1185</X><Y>1615</Y></Point>
-						<Point><X>1185</X><Y>1535</Y></Point>
-						<Point><X>1207</X><Y>1535</Y></Point>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>13</X><Y>0</Y></Point>
+						<Point><X>23</X><Y>0</Y></Point>
+						<Point><X>23</X><Y>-45</Y></Point>
+						<Point><X>-57</X><Y>-45</Y></Point>
+						<Point><X>-57</X><Y>-125</Y></Point>
+						<Point><X>-35</X><Y>-125</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
 					<Id>1737448016948</Id>
 					<Name><![CDATA[connector29]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>1245</X><Y>1535</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4606,39 +3932,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndNIDA]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>1245</X><Y>1535</Y></Point>
-						<Point><X>1260</X><Y>1535</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448016950</Id>
-					<Name><![CDATA[connector55]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndNIDA]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[clipInsertion]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4647,8 +3940,8 @@ collectStationData();]]></DestroyCode>
 						<ItemName><![CDATA[port1]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
-						<Point><X>1270</X><Y>1535</Y></Point>
-						<Point><X>1285</X><Y>1535</Y></Point>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>40</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -4672,39 +3965,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndClip]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>11</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448029244</Id>
-					<Name><![CDATA[connector56]]></Name>
-					<X>1370</X><Y>1559</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndClip]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[coverAssembly]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4714,10 +3974,12 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>0</X><Y>251</Y></Point>
-						<Point><X>-970</X><Y>251</Y></Point>
-						<Point><X>-970</X><Y>351</Y></Point>
-						<Point><X>-945</X><Y>351</Y></Point>
+						<Point><X>11</X><Y>0</Y></Point>
+						<Point><X>21</X><Y>0</Y></Point>
+						<Point><X>21</X><Y>251</Y></Point>
+						<Point><X>-949</X><Y>251</Y></Point>
+						<Point><X>-949</X><Y>351</Y></Point>
+						<Point><X>-924</X><Y>351</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -4741,39 +4003,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndShip]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>16</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448050031</Id>
-					<Name><![CDATA[connector57]]></Name>
-					<X>890</X><Y>1934</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndShip]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[dispatch]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4783,7 +4012,7 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>12</X><Y>0</Y></Point>
+						<Point><X>38</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -4807,7 +4036,7 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndDispatch]]></ItemName>
+						<ItemName><![CDATA[timeEnd]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
 						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
@@ -4816,45 +4045,12 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>20</X><Y>0</Y></Point>
+						<Point><X>55</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
-					<Id>1737448056058</Id>
-					<Name><![CDATA[connector58]]></Name>
-					<X>970</X><Y>1934</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndDispatch]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[productOut]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[Sink]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>70</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448349746</Id>
-					<Name><![CDATA[connector32]]></Name>
+					<Id>1737448349758</Id>
+					<Name><![CDATA[connector59]]></Name>
 					<X>535</X><Y>1910</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -4873,41 +4069,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndCover]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>-25</X><Y>0</Y></Point>
-						<Point><X>-25</X><Y>24</Y></Point>
-						<Point><X>-25</X><Y>25</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448349758</Id>
-					<Name><![CDATA[connector59]]></Name>
-					<X>500</X><Y>1935</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndCover]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[coverAssembly]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4917,7 +4078,9 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>-11</X><Y>-1</Y></Point>
+						<Point><X>-25</X><Y>0</Y></Point>
+						<Point><X>-25</X><Y>24</Y></Point>
+						<Point><X>-46</X><Y>24</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -4941,39 +4104,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMtM]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>11</X><Y>1</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448356596</Id>
-					<Name><![CDATA[connector60]]></Name>
-					<X>620</X><Y>1935</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMtM]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[manifoldTest]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -4983,11 +4113,11 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>10</X><Y>0</Y></Point>
-						<Point><X>10</X><Y>55</Y></Point>
-						<Point><X>-110</X><Y>55</Y></Point>
-						<Point><X>-110</X><Y>100</Y></Point>
-						<Point><X>-93</X><Y>100</Y></Point>
+						<Point><X>31</X><Y>1</Y></Point>
+						<Point><X>31</X><Y>56</Y></Point>
+						<Point><X>-89</X><Y>56</Y></Point>
+						<Point><X>-89</X><Y>101</Y></Point>
+						<Point><X>-72</X><Y>101</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -5011,39 +4141,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMPrep]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>20</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448363171</Id>
-					<Name><![CDATA[connector61]]></Name>
-					<X>400</X><Y>2035</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMPrep]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[manifoldAssembly]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -5053,7 +4150,7 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>17</X><Y>0</Y></Point>
+						<Point><X>47</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -5077,39 +4174,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMani]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>25</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448366415</Id>
-					<Name><![CDATA[connector62]]></Name>
-					<X>490</X><Y>2035</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMani]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[meterToManifold]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -5119,9 +4183,9 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>20</X><Y>0</Y></Point>
-						<Point><X>20</X><Y>-109</Y></Point>
-						<Point><X>45</X><Y>-109</Y></Point>
+						<Point><X>55</X><Y>0</Y></Point>
+						<Point><X>55</X><Y>-109</Y></Point>
+						<Point><X>80</X><Y>-109</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -5145,39 +4209,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMPT]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>15</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448370511</Id>
-					<Name><![CDATA[connector63]]></Name>
-					<X>590</X><Y>2035</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMPT]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[meterToBox]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -5187,7 +4218,7 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>17</X><Y>0</Y></Point>
+						<Point><X>42</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -5211,39 +4242,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMtB]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>35</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448374443</Id>
-					<Name><![CDATA[connector64]]></Name>
-					<X>690</X><Y>2035</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndMtB]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[shipping]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -5253,9 +4251,9 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>35</X><Y>0</Y></Point>
-						<Point><X>35</X><Y>-125</Y></Point>
-						<Point><X>110</X><Y>-125</Y></Point>
+						<Point><X>80</X><Y>0</Y></Point>
+						<Point><X>80</X><Y>-125</Y></Point>
+						<Point><X>155</X><Y>-125</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -5279,39 +4277,6 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndCIU]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>70</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737448378429</Id>
-					<Name><![CDATA[connector65]]></Name>
-					<X>450</X><Y>2185</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndCIU]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
 						<ItemName><![CDATA[shipping]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
@@ -5321,9 +4286,9 @@ collectStationData();]]></DestroyCode>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>275</X><Y>0</Y></Point>
-						<Point><X>275</X><Y>-259</Y></Point>
-						<Point><X>350</X><Y>-259</Y></Point>
+						<Point><X>355</X><Y>0</Y></Point>
+						<Point><X>355</X><Y>-259</Y></Point>
+						<Point><X>430</X><Y>-259</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -5347,49 +4312,18 @@ collectStationData();]]></DestroyCode>
 					<TargetEmbeddedObjectReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndValve]]></ItemName>
+						<ItemName><![CDATA[valveTest]]></ItemName>
 					</TargetEmbeddedObjectReference>
 					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
+						<PackageName><![CDATA[newlesiralayout]]></PackageName>
+						<ClassName><![CDATA[DelayWithSS]]></ClassName>
+						<ItemName><![CDATA[port1]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
 						<Point><X>17</X><Y>-2</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737532247408</Id>
-					<Name><![CDATA[connector42]]></Name>
-					<X>639</X><Y>1535</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[valveTest]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[DelayWithSS]]></ClassName>
-						<ItemName><![CDATA[port1]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[timeEndValve]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>-13</X><Y>22</Y></Point>
+						<Point><X>27</X><Y>-2</Y></Point>
+						<Point><X>40</X><Y>-24</Y></Point>
 					</Points>
 				</Connector>
 			</Connectors>
@@ -5397,7 +4331,7 @@ collectStationData();]]></DestroyCode>
 				<Event>
 					<Id>1736923934937</Id>
 					<Name><![CDATA[releaseTimer]]></Name>
-					<X>60</X><Y>2675</Y>
+					<X>60</X><Y>2795</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -5474,6 +4408,106 @@ station.holdSafety.unblock();]]></Body>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1737322844347</Id>
+					<Name><![CDATA[writeEndingStock]]></Name>
+					<X>60</X><Y>2820</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[endingStockPerStation
+		.println("station, endingStock, recipient");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Lid Assembly", lidAssembly.in - lidAssembly.out,
+		"Valve Assembly");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Coil Winding", coilWinding.in - coilWinding.out,
+		"Body Assembly");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Plunger Assembly",
+		plungerAssembly.in - plungerAssembly.out,
+		"Valve Assembly");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Rotor Assembly",
+		rotorAssembly.in - rotorAssembly.out,
+		"Valve Assembly");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Body Assembly", bodyAssembly.in - bodyAssembly.out,
+		"Valve Assembly");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Valve Assembly",
+		valveAssembly.in - valveAssembly.out,
+		"Valve Functional Test");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Valve Functional Test",
+		valveTest.in - valveTest.out, "Testbench");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Testbench", testBench.in - testBench.out,
+		"Electronics Preparation");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Electronics Preparation",
+		electronicsPrep.in - electronicsPrep.out,
+		"Electronics Soldering");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Electronics Soldering",
+		electronicsSoldering.in - electronicsSoldering.out,
+		"Power Consumption");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Battery Assembly",
+		batteryAssembly.in - batteryAssembly.out,
+		"Electronics Preparation");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Probe Assembly",
+		probeAssembly.in - probeAssembly.out,
+		"Electronics Preparation");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Power Consumption",
+		powerConsumption.in - powerConsumption.out,
+		"Electronics NIDA");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Electronics NIDA", nida.in - nida.out,
+		"Clip Insertion");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Clip Insertion",
+		clipInsertion.in - clipInsertion.out,
+		"Cover Assembly");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Cover Assembly",
+		coverAssembly.in - coverAssembly.out,
+		"Meter to Manifold");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Meter to Manifold",
+		meterToManifold.in - meterToManifold.out,
+		"Manifold Pressure Test");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Manifold Preparation",
+		manifoldPrep.in - manifoldPrep.out,
+		"Manifold Assembly");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Manifold Assembly",
+		manifoldAssembly.in - manifoldAssembly.out,
+		"Meter to Manifold");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Manifold Pressure Test",
+		manifoldTest.in - manifoldTest.out,
+		"Manifold to Box");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Manifold to Box", meterToBox.in - meterToBox.out,
+		"Shipping");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"CIU Assembly", ciuAssembly.in - ciuAssembly.out,
+		"Shipping");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Shipping", shipping.in - shipping.out, "Dispatch");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Dispatch", dispatch.in - dispatch.out, "Out");
+endingStockPerStation.printf(Locale.US, "%s, %d, %s\n",
+		"Product Out", meterNumber, "Product Out");
+]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1737437666332</Id>
 					<Name><![CDATA[rawInit]]></Name>
 					<X>60</X><Y>2430</Y>
@@ -5498,493 +4532,92 @@ rmCover.inject(rawMaterialSize);]]></Body>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1737439663704</Id>
-					<Name><![CDATA[writeToFileStation]]></Name>
+					<Id>1737438388764</Id>
+					<Name><![CDATA[writeToFileMain]]></Name>
 					<X>60</X><Y>2460</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[file]]></Name>
-						<Type><![CDATA[TextFile]]></Type>
+						<Name><![CDATA[scenario]]></Name>
+						<Type><![CDATA[String]]></Type>
 					</Parameter>
-					<Parameter>
-						<Name><![CDATA[entries]]></Name>
-						<Type><![CDATA[HashMap<String, Double>]]></Type>
-					</Parameter>
-					<Body><![CDATA[file.println("agentID, delayTime");
-for (Map.Entry<String, Double> entry : entries.entrySet()) {
+					<Body><![CDATA[TextFile file = (TextFile) fileMapping.get(scenario);
+file.println("agentID, delayTime");
+for (Map.Entry<String, Double> entry : mainTimeEntries
+		.entrySet()) {
 	String meterNumber = entry.getKey();
 	Double delayTime = entry.getValue();
-	file.printf(Locale.US, "%s, %8.2f\n", meterNumber,
+	file.printf(Locale.US, "%s, %1.2f\n", meterNumber,
 			delayTime);
 }]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1737445085784</Id>
-					<Name><![CDATA[collectStationData]]></Name>
+					<Id>1737438885270</Id>
+					<Name><![CDATA[mapFiles]]></Name>
 					<X>60</X><Y>2490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[writeToFileStation(timeOutputLid, lidTimeEntries);
-writeToFileStation(timeOutputCoil, coilTimeEntries);
-writeToFileStation(timeOutputPlunger, plungerTimeEntries);
-writeToFileStation(timeOutputRotor, rotorTimeEntries);
-writeToFileStation(timeOutputBody, bodyTimeEntries);
-writeToFileStation(timeOutputValve, valveTimeEntries);
-writeToFileStation(timeOutputVFT, vftTimeEntries);
-writeToFileStation(timeOutputTest, testTimeEntries);
-writeToFileStation(timeOutputEPrep, ePrepTimeEntries);
-writeToFileStation(timeOutputESold, eSoldTimeEntries);
-writeToFileStation(timeOutputBattery, batteryTimeEntries);
-writeToFileStation(timeOutputProbe, probeTimeEntries);
-writeToFileStation(timeOutputPC, pcTimeEntries);
-writeToFileStation(timeOutputNIDA, nidaTimeEntries);
-writeToFileStation(timeOutputClip, clipTimeEntries);
-writeToFileStation(timeOutputCover, coverTimeEntries);
-writeToFileStation(timeOutputMtM, mtmTimeEntries);
-writeToFileStation(timeOutputMPrep, mPrepTimeEntries);
-writeToFileStation(timeOutputMani, maniTimeEntries);
-writeToFileStation(timeOutputMPT, mptTimeEntries);
-writeToFileStation(timeOutputMtB, mtbTimeEntries);
-writeToFileStation(timeOutputCIU, ciuTimeEntries);
-writeToFileStation(timeOutputShip, shipTimeEntries);
-writeToFileStation(timeOutputDispatch, dispatchTimeEntries);]]></Body>
+					<Body><![CDATA[fileMapping.put("ZeroStockOpening", timeOutputZeroStock);
+fileMapping.put("BufferStockOpening",
+		timeOutputBufferStock);]]></Body>
 				</Function>
 			</Functions>
 			<Connectivity>
 				<TextFile>
-					<Id>1737437554325</Id>
-					<Name><![CDATA[timeOutputLid]]></Name>
-					<X>-550</X><Y>2250</Y>
+					<Id>1737311499493</Id>
+					<Name><![CDATA[timeOutputZeroStock]]></Name>
+					<X>60</X><Y>2620</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
+					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<FileType>FILE</FileType>
 					<Url><![CDATA[]]></Url>
 					<ResourceReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputLid.txt]]></ClassName>
+						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Scenario/outputZeroStockOpening.txt]]></ClassName>
 					</ResourceReference>
 					<FileMode>WRITE</FileMode>
 					<CharsetName>UTF-8</CharsetName>
 					<Separators></Separators>
 				</TextFile>
 				<TextFile>
-					<Id>1737443702634</Id>
-					<Name><![CDATA[timeOutputCoil]]></Name>
-					<X>-550</X><Y>2280</Y>
+					<Id>1737311521122</Id>
+					<Name><![CDATA[timeOutputBufferStock]]></Name>
+					<X>60</X><Y>2650</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
+					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<FileType>FILE</FileType>
 					<Url><![CDATA[]]></Url>
 					<ResourceReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputCoil.txt]]></ClassName>
+						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Scenario/outputBufferStockOpening.txt]]></ClassName>
 					</ResourceReference>
 					<FileMode>WRITE</FileMode>
 					<CharsetName>UTF-8</CharsetName>
 					<Separators></Separators>
 				</TextFile>
 				<TextFile>
-					<Id>1737443705195</Id>
-					<Name><![CDATA[timeOutputPlunger]]></Name>
-					<X>-550</X><Y>2310</Y>
+					<Id>1737320131256</Id>
+					<Name><![CDATA[endingStockPerStation]]></Name>
+					<X>60</X><Y>2680</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
+					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<FileType>FILE</FileType>
 					<Url><![CDATA[]]></Url>
 					<ResourceReference>
 						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputPlunger.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443706975</Id>
-					<Name><![CDATA[timeOutputRotor]]></Name>
-					<X>-550</X><Y>2340</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputRotor.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443709619</Id>
-					<Name><![CDATA[timeOutputBody]]></Name>
-					<X>-550</X><Y>2370</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputBody.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443712200</Id>
-					<Name><![CDATA[timeOutputValve]]></Name>
-					<X>-550</X><Y>2400</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputValve.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443730806</Id>
-					<Name><![CDATA[timeOutputPC]]></Name>
-					<X>-249</X><Y>2249</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputPC.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443730808</Id>
-					<Name><![CDATA[timeOutputNIDA]]></Name>
-					<X>-249</X><Y>2279</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputNIDA.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443730810</Id>
-					<Name><![CDATA[timeOutputClip]]></Name>
-					<X>-249</X><Y>2309</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputClip.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443730812</Id>
-					<Name><![CDATA[timeOutputCover]]></Name>
-					<X>-249</X><Y>2339</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputCover.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443730814</Id>
-					<Name><![CDATA[timeOutputMtM]]></Name>
-					<X>-249</X><Y>2369</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMtM.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443730816</Id>
-					<Name><![CDATA[timeOutputMPrep]]></Name>
-					<X>-249</X><Y>2399</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMPrep.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812953</Id>
-					<Name><![CDATA[timeOutputVFT]]></Name>
-					<X>-550</X><Y>2430</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputVFT.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812955</Id>
-					<Name><![CDATA[timeOutputTest]]></Name>
-					<X>-550</X><Y>2460</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputTest.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812957</Id>
-					<Name><![CDATA[timeOutputEPrep]]></Name>
-					<X>-550</X><Y>2490</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputEPrep.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812959</Id>
-					<Name><![CDATA[timeOutputESold]]></Name>
-					<X>-550</X><Y>2520</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputESold.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812961</Id>
-					<Name><![CDATA[timeOutputBattery]]></Name>
-					<X>-550</X><Y>2550</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputBattery.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812963</Id>
-					<Name><![CDATA[timeOutputProbe]]></Name>
-					<X>-550</X><Y>2580</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputProbe.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812965</Id>
-					<Name><![CDATA[timeOutputMani]]></Name>
-					<X>-249</X><Y>2429</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMani.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812967</Id>
-					<Name><![CDATA[timeOutputMPT]]></Name>
-					<X>-249</X><Y>2459</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMPT.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812969</Id>
-					<Name><![CDATA[timeOutputMtB]]></Name>
-					<X>-249</X><Y>2489</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMtB.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812971</Id>
-					<Name><![CDATA[timeOutputCIU]]></Name>
-					<X>-249</X><Y>2519</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputCIU.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812973</Id>
-					<Name><![CDATA[timeOutputShip]]></Name>
-					<X>-250</X><Y>2550</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputShipping.txt]]></ClassName>
-					</ResourceReference>
-					<FileMode>WRITE</FileMode>
-					<CharsetName>UTF-8</CharsetName>
-					<Separators></Separators>
-				</TextFile>
-				<TextFile>
-					<Id>1737443812975</Id>
-					<Name><![CDATA[timeOutputDispatch]]></Name>
-					<X>-250</X><Y>2580</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<FileType>FILE</FileType>
-					<Url><![CDATA[]]></Url>
-					<ResourceReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputDispatch.txt]]></ClassName>
+						<ClassName><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/endingStock.txt]]></ClassName>
 					</ResourceReference>
 					<FileMode>WRITE</FileMode>
 					<CharsetName>UTF-8</CharsetName>
@@ -8497,6 +7130,85 @@ writeToFileStation(timeOutputDispatch, dispatchTimeEntries);]]></Body>
 					</QuantityColumn>
 				</EmbeddedObject>
 				<EmbeddedObject>
+					<Id>1736722289437</Id>
+					<Name><![CDATA[timeEnd]]></Name>
+					<X>975</X><Y>1914</Y>
+					<Label><X>-3</X><Y>46</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
+							<ItemName><![CDATA[1412336243203]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[startObjects]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[{lidAssembly.timeMainStart, lidAssembly.timeSafetyStart,
+		valveAssembly.timeSafetyStart,
+		valveTest.timeSafetyStart,
+		testBench.timeSafetyStart,
+		electronicsPrep.timeSafetyStart,
+		electronicsSoldering.timeSafetyStart,
+		powerConsumption.timeSafetyStart,
+		nida.timeSafetyStart, clipInsertion.timeSafetyStart,
+		coverAssembly.timeSafetyStart,
+		meterToManifold.timeSafetyStart,
+		manifoldTest.timeSafetyStart,
+		meterToBox.timeSafetyStart,
+		shipping.timeSafetyStart, dispatch.timeSafetyStart,}]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[datasetCapacity]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[1]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[meterNumber++;
+String source = (String) agentSourceMap.get(agent);
+String formMeterNumber = String.format("%04d", meterNumber);
+String meterID = source + formMeterNumber;
+mainTimeEntries.put(meterID, timeEnd.dataset.getY(0));]]></Code>
+							</Value>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
 					<Id>1736774636891</Id>
 					<Name><![CDATA[lidAssembly]]></Name>
 					<X>330</X><Y>1495</Y>
@@ -10911,1690 +9623,6 @@ if (inputCount == testBench.delay_capacity) {
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExit]]></Name>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737436901666</Id>
-					<Name><![CDATA[timeEndLid]]></Name>
-					<X>400</X><Y>1515</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	lidAssembly.timeMainStart, 
-	lidAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-lidTimeEntries.put(meterID, timeEndLid.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445805223</Id>
-					<Name><![CDATA[timeEndCoil]]></Name>
-					<X>360</X><Y>1590</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	coilWinding.timeMainStart, 
-	coilWinding.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-coilTimeEntries.put(meterID, timeEndCoil.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445810059</Id>
-					<Name><![CDATA[timeEndPlunger]]></Name>
-					<X>420</X><Y>1660</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	plungerAssembly.timeMainStart, 
-	plungerAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-plungerTimeEntries.put(meterID,
-		timeEndPlunger.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445813303</Id>
-					<Name><![CDATA[timeEndRotor]]></Name>
-					<X>430</X><Y>1730</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	rotorAssembly.timeMainStart, 
-	rotorAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-rotorTimeEntries.put(meterID, timeEndRotor.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445816333</Id>
-					<Name><![CDATA[timeEndBody]]></Name>
-					<X>480</X><Y>1578</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	bodyAssembly.timeMainStart, 
-	bodyAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-bodyTimeEntries.put(meterID, timeEndBody.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445820091</Id>
-					<Name><![CDATA[timeEndValve]]></Name>
-					<X>596</X><Y>1537</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	valveAssembly.timeMainStart, 
-	valveAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-traceln("Meter ID:" + meterID);
-valveTimeEntries.put(meterID, timeEndValve.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445823394</Id>
-					<Name><![CDATA[timeEndVFT]]></Name>
-					<X>670</X><Y>1515</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	valveTest.timeMainStart, 
-	valveTest.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-vftTimeEntries.put(meterID, timeEndVFT.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445826335</Id>
-					<Name><![CDATA[timeEndTest]]></Name>
-					<X>880</X><Y>1605</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	testBench.timeMainStart, 
-	testBench.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-testTimeEntries.put(meterID, timeEndTest.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445829353</Id>
-					<Name><![CDATA[timeEndEPrep]]></Name>
-					<X>1150</X><Y>1540</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	electronicsPrep.timeMainStart, 
-	electronicsPrep.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-ePrepTimeEntries.put(meterID, timeEndEPrep.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445846142</Id>
-					<Name><![CDATA[timeEndESold]]></Name>
-					<X>1150</X><Y>1664</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	electronicsSoldering.timeMainStart, 
-	electronicsSoldering.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-eSoldTimeEntries.put(meterID, timeEndESold.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445850293</Id>
-					<Name><![CDATA[timeEndBattery]]></Name>
-					<X>1040</X><Y>1640</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	batteryAssembly.timeMainStart, 
-	batteryAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-batteryTimeEntries.put(meterID,
-		timeEndBattery.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445853372</Id>
-					<Name><![CDATA[timeEndProbe]]></Name>
-					<X>1040</X><Y>1710</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	probeAssembly.timeMainStart, 
-	probeAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-probeTimeEntries.put(meterID, timeEndProbe.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910819</Id>
-					<Name><![CDATA[timeEndPC]]></Name>
-					<X>1235</X><Y>1640</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	powerConsumption.timeMainStart, 
-	powerConsumption.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-pcTimeEntries.put(meterID, timeEndPC.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910826</Id>
-					<Name><![CDATA[timeEndNIDA]]></Name>
-					<X>1240</X><Y>1515</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	nida.timeMainStart, 
-	nida.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-nidaTimeEntries.put(meterID, timeEndNIDA.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910833</Id>
-					<Name><![CDATA[timeEndClip]]></Name>
-					<X>1340</X><Y>1539</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	clipInsertion.timeMainStart, 
-	clipInsertion.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-clipTimeEntries.put(meterID, timeEndClip.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910840</Id>
-					<Name><![CDATA[timeEndCover]]></Name>
-					<X>480</X><Y>1915</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	coverAssembly.timeMainStart, 
-	coverAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-coverTimeEntries.put(meterID, timeEndCover.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910847</Id>
-					<Name><![CDATA[timeEndMtM]]></Name>
-					<X>590</X><Y>1915</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	meterToManifold.timeMainStart, 
-	meterToManifold.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-mtmTimeEntries.put(meterID, timeEndMtM.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910854</Id>
-					<Name><![CDATA[timeEndMPrep]]></Name>
-					<X>370</X><Y>2015</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	manifoldPrep.timeMainStart, 
-	manifoldPrep.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-mPrepTimeEntries.put(meterID, timeEndMPrep.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910861</Id>
-					<Name><![CDATA[timeEndMani]]></Name>
-					<X>460</X><Y>2015</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	manifoldAssembly.timeMainStart, 
-	manifoldAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-maniTimeEntries.put(meterID, timeEndMani.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910868</Id>
-					<Name><![CDATA[timeEndMPT]]></Name>
-					<X>560</X><Y>2015</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	manifoldTest.timeMainStart, 
-	manifoldTest.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-mptTimeEntries.put(meterID, timeEndMPT.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910875</Id>
-					<Name><![CDATA[timeEndMtB]]></Name>
-					<X>660</X><Y>2015</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	meterToBox.timeMainStart, 
-	meterToBox.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-mtbTimeEntries.put(meterID, timeEndMtB.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910882</Id>
-					<Name><![CDATA[timeEndCIU]]></Name>
-					<X>420</X><Y>2165</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	ciuAssembly.timeMainStart, 
-	ciuAssembly.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-ciuTimeEntries.put(meterID, timeEndCIU.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910889</Id>
-					<Name><![CDATA[timeEndShip]]></Name>
-					<X>860</X><Y>1914</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	shipping.timeMainStart, 
-	shipping.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-shipTimeEntries.put(meterID, timeEndShip.dataset.getY(0));]]></Code>
-							</Value>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737445910896</Id>
-					<Name><![CDATA[timeEndDispatch]]></Name>
-					<X>940</X><Y>1914</Y>
-					<Label><X>-3</X><Y>46</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureEnd]]></ClassName>
-							<ItemName><![CDATA[1412336243203]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[startObjects]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[{
-	dispatch.timeMainStart, 
-	dispatch.timeSafetyStart
-}]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[datasetCapacity]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[1]]></Code>
-							</Value>
-						</Parameter>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[meterNumber++;
-String source = (String) agentSourceMap.get(agent);
-String formMeterNumber = String.format("%04d", meterNumber);
-String meterID = source + formMeterNumber;
-dispatchTimeEntries.put(meterID,
-		timeEndDispatch.dataset.getY(0));]]></Code>
-							</Value>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>false</ReplicationFlag>
@@ -26511,6 +23539,39 @@ if (source == null) {
 					</Points>
 				</Connector>
 				<Connector>
+					<Id>1736834799075</Id>
+					<Name><![CDATA[connector17]]></Name>
+					<X>450</X><Y>270</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[newlesiralayout]]></PackageName>
+						<ClassName><![CDATA[SubAssy]]></ClassName>
+						<ItemName><![CDATA[hold]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[Hold]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[newlesiralayout]]></PackageName>
+						<ClassName><![CDATA[SubAssy]]></ClassName>
+						<ItemName><![CDATA[queue]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[Queue]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-60</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
 					<Id>1736836017775</Id>
 					<Name><![CDATA[connector9]]></Name>
 					<X>350</X><Y>270</Y>
@@ -26627,72 +23688,6 @@ if (source == null) {
 						<Point><X>0</X><Y>0</Y></Point>
 						<Point><X>-30</X><Y>0</Y></Point>
 						<Point><X>-30</X><Y>-45</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737536084026</Id>
-					<Name><![CDATA[connector17]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[SubAssy]]></ClassName>
-						<ItemName><![CDATA[hold]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[Hold]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[SubAssy]]></ClassName>
-						<ItemName><![CDATA[timeMainStart]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureStart]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>450</X><Y>270</Y></Point>
-						<Point><X>420</X><Y>270</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1737536084045</Id>
-					<Name><![CDATA[connector19]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[SubAssy]]></ClassName>
-						<ItemName><![CDATA[timeMainStart]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureStart]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[newlesiralayout]]></PackageName>
-						<ClassName><![CDATA[SubAssy]]></ClassName>
-						<ItemName><![CDATA[queue]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[Queue]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>410</X><Y>270</Y></Point>
-						<Point><X>390</X><Y>270</Y></Point>
 					</Points>
 				</Connector>
 			</Connectors>
@@ -28033,62 +25028,6 @@ if (inputCountSafety == delay_capacity) {
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[destroyEntity]]></Name>
-						</Parameter>
-					</Parameters>
-					<ReplicationFlag>false</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InitialLocationType>XYZ</InitialLocationType>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>SPECIFIED_NUMBER</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
-					<Id>1737536079960</Id>
-					<Name><![CDATA[timeMainStart]]></Name>
-					<X>410</X><Y>250</Y>
-					<Label><X>-30</X><Y>-15</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[TimeMeasureStart]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-							<ClassName><![CDATA[TimeMeasureStart]]></ClassName>
-							<ItemName><![CDATA[1412336243204]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-						<Parameter>
-							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[String source = (String) get_Main().agentSourceMap
-		.get(agent);
-
-if (source == null) {
-	get_Main().agentSourceMap.put(agent, "MN");
-}]]></Code>
-							</Value>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>false</ReplicationFlag>
@@ -29867,127 +26806,22 @@ viewArea.navigateTo();
 			<Location>FILE_SYSTEM</Location>
 		</Resource>
 		<Resource>
+			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Scenario/outputZeroStockOpening.txt]]></Path>
+			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
+		</Resource>
+		<Resource>
+			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Scenario/outputBufferStockOpening.txt]]></Path>
+			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
+		</Resource>
+		<Resource>
+			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/endingStock.txt]]></Path>
+			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
+		</Resource>
+		<Resource>
 			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/parametersInput.xlsm]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputLid.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputCoil.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputPlunger.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputRotor.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputBody.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputValve.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputVFT.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputTest.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputEPrep.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputESold.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputBattery.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputProbe.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputPC.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputNIDA.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputClip.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputCover.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMtM.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMPrep.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMani.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMPT.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputMtB.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputCIU.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputShipping.txt]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[C:/Users/Siphamandla (Work)/Desktop/Work/Lesira-Teq/Layout Optimization/Lesira-Teq-Layout/data/Stations/timeOutputDispatch.txt]]></Path>
 			<ReferencedFromUserCode>false</ReferencedFromUserCode>
 			<Location>FILE_SYSTEM</Location>
 		</Resource>

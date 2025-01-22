@@ -1,4 +1,0 @@
-agentID, delayTime
-MN0005,    65.68
-MN0013,    74.27
-MN0021,    72.47

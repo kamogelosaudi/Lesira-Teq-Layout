@@ -1,0 +1,26 @@
+station, endingStock, recipient
+Lid Assembly, 367, Valve Assembly
+Coil Winding, 443, Body Assembly
+Plunger Assembly, 0, Valve Assembly
+Rotor Assembly, 0, Valve Assembly
+Body Assembly, 629, Valve Assembly
+Valve Assembly, 2298, Valve Functional Test
+Valve Functional Test, 512, Testbench
+Testbench, 0, Electronics Preparation
+Electronics Preparation, 719, Electronics Soldering
+Electronics Soldering, 492, Power Consumption
+Battery Assembly, 535, Electronics Preparation
+Probe Assembly, 217, Electronics Preparation
+Power Consumption, 394, Electronics NIDA
+Electronics NIDA, 30, Clip Insertion
+Clip Insertion, 1338, Cover Assembly
+Cover Assembly, 782, Meter to Manifold
+Meter to Manifold, 137, Manifold Pressure Test
+Manifold Preparation, 205, Manifold Assembly
+Manifold Assembly, 899, Meter to Manifold
+Manifold Pressure Test, 604, Manifold to Box
+Manifold to Box, 627, Shipping
+CIU Assembly, 498, Shipping
+Shipping, 189, Dispatch
+Dispatch, 0, Out
+Product Out, 328, Product Out
