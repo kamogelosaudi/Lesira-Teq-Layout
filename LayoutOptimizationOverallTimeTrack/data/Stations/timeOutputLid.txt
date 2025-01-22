@@ -1,0 +1,3 @@
+agentID, delayTime
+MN0026,   125.36
+MN0011,   129.24
